@@ -7,6 +7,13 @@ class Domain(object):
         self.step_num = step_num + 1
         self.step = float(self.end - self.start) / float(step_num)
 
+    def get_value(self, n):
+        return self.start + self.step * n
+
+    def generator(self):
+        for n in range(self.step_num):
+            yield self.get_value(n)
+
     def as_array(self):
         return numpy.linspace(self.start, self.end, self.step_num)
 

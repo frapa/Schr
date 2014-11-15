@@ -1,4 +1,4 @@
-from domain import *
+from .domain import *
 
 from . import integrals
 from . import numerov

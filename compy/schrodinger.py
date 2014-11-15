@@ -1,14 +1,12 @@
 import numpy
 
-import numerov
+from . import numerov
 from . import integrals
-
-h = 1.0
 
 def square_modulus(psi):
     return psi * numpy.conjugate(psi)
 
-def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, dE=0.1, E_max=10.0,
+def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h = 1.0, dE=0.1, E_max=10.0,
         eigen_num=None, precision=0.0001, normalized=True):
 
     # Find minimum of potential

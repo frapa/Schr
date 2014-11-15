@@ -1,7 +1,7 @@
 import numpy
 
 def numerov_integration(domain, a, f0, f1):
-    f = numpy.zeros(len(domaina, dtype=numpy.complex))
+    f = numpy.zeros(len(domain), dtype=numpy.complex)
     f[0] = f0
     f[1] = f1
 
