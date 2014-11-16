@@ -25,6 +25,7 @@
   <object class="GtkAdjustment" id="energy_max_adjust">
     <property name="lower">-1000000000</property>
     <property name="upper">1000000000</property>
+    <property name="value">10</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -292,7 +293,7 @@ specity 0, as this leads to better results.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="spinbutton3">
+              <object class="GtkSpinButton" id="bs_spin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Specify the boundary condition at the beginning of the integration range.
@@ -327,7 +328,7 @@ specity 0, as this leads to better results.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="spinbutton4">
+              <object class="GtkSpinButton" id="be_spin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Specify the boundary condition at the end of the integration range.
@@ -380,7 +381,7 @@ specity 0, as this leads to better results.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkRadioButton" id="radiobutton1">
+          <object class="GtkRadioButton" id="range_num_radio">
             <property name="label" translatable="yes">Find eigenvalues in range</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -418,7 +419,7 @@ be lower than the minimum of potential energy.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="spinbutton5">
+              <object class="GtkSpinButton" id="emin_spin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Beginning of the energy range. This value cannot
@@ -449,7 +450,7 @@ high may cause the computation to take long time.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="spinbutton6">
+              <object class="GtkSpinButton" id="emax_spin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">End of the energy range. Setting this value too
@@ -482,7 +483,7 @@ high may cause the computation to take long time.</property>
             <property name="xalign">0</property>
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
-            <property name="group">radiobutton1</property>
+            <property name="group">range_num_radio</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -510,7 +511,7 @@ high may cause the computation to take long time.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="spinbutton7">
+              <object class="GtkSpinButton" id="enum_spin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Number of eigenvalues to be found</property>
@@ -554,7 +555,7 @@ eigenvalues or give nonsensical results.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="spinbutton11">
+              <object class="GtkSpinButton" id="einc_spin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Energy increment used to search for eigenvalues.
@@ -588,7 +589,7 @@ at most far as precision from the true value.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="spinbutton12">
+              <object class="GtkSpinButton" id="precision_spin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">The computed eigenvalues are guaranteed to be
@@ -656,7 +657,7 @@ at most far as precision from the true value.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry3">
+              <object class="GtkEntry" id="mass_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">You can use scientific notation</property>
@@ -681,7 +682,7 @@ at most far as precision from the true value.</property>
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="entry2">
+              <object class="GtkEntry" id="plank_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">You can use scientific notation</property>
@@ -728,7 +729,7 @@ at most far as precision from the true value.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton" id="checkbutton1">
+          <object class="GtkCheckButton" id="norm_check">
             <property name="label" translatable="yes">Normalize wave function</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -745,7 +746,7 @@ at most far as precision from the true value.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton" id="checkbutton2">
+          <object class="GtkCheckButton" id="probability_check">
             <property name="label" translatable="yes">Show probability</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>

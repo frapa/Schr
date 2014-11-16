@@ -6,11 +6,16 @@ from . import integrals
 def square_modulus(psi):
     return psi * numpy.conjugate(psi)
 
-def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h = 1.0, dE=0.1, E_max=10.0,
+def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h=1.0, dE=0.1, E_min=None, E_max=10.0,
         eigen_num=None, precision=0.0001, normalized=True):
 
     # Find minimum of potential
-    E_min = numpy.min(V)
+    if E_min is None:
+        E_min = numpy.min(V)
+    else:
+        Em = numpy.min(V)
+        if E_min < Em:
+            E_min = Em
 
     # Find eigenvalues of energy using the shooting method
     # The following lines allow the function to accept both a range of energies
