@@ -7,7 +7,7 @@ def square_modulus(psi):
     return psi * numpy.conjugate(psi)
 
 def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h=1.0, dE=0.1, E_min=None, E_max=10.0,
-        eigen_num=None, precision=0.0001, normalized=True):
+        eigen_num=None, precision=0.0001, normalized=True, callback=None):
 
     # Find minimum of potential
     if E_min is None:
@@ -37,7 +37,7 @@ def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h=1.0, dE=0.1, E_mi
     eigenfunctions = []
     err = None
     last_E = None
-    for E in energies:
+    for n, E in enumerate(energies):
         a = 2.0*m*(V - E) / h**2
 
         psi = numerov.numerov_integration(D, a, boundary_start, boundary_start+1.0)
@@ -68,7 +68,15 @@ def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h=1.0, dE=0.1, E_mi
 
             eigenvalues.append(E)
             eigenfunctions.append(psi)
-
+        
+        if callback is not None:
+            if isinstance(energies, numpy.ndarray):
+                fraction = float(n) / len(energies)
+            else:
+                fraction = float(len(eigenvalues)) / eigen_num
+            
+            callback(fraction)
+        
         if eigen_num is not None and len(eigenvalues) == eigen_num:
             break
 
@@ -80,5 +88,8 @@ def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h=1.0, dE=0.1, E_mi
         for n, psi in enumerate(eigenfunctions):
             integral = integrals.trapezioidal(D, psi * numpy.conjugate(psi))
             eigenfunctions[n] = psi / numpy.sqrt(integral)
+    
+    if callback is not None:
+        callback(1.0)
 
     return (eigenvalues, eigenfunctions)

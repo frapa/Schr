@@ -1,12 +1,22 @@
 # -*- encoding:utf-8 -*-
 #!/usr/bin/python
 
+from multiprocessing import Process, Queue
 import numpy as np
 from numpy import *
 import matplotlib.pyplot as plt
 from gi.repository import Gtk
+from gi.repository import GLib
 
 import compy as cp
+
+def call_schr(q, *args, **kwargs):
+    def callback(fraction):
+        q.put({"type": "fraction", "fraction": fraction})
+    
+    ev, ef = cp.schrodinger.solve_numerov(callback=callback, *args, **kwargs)
+    
+    q.put({"type": "result", "result": (ev, ef)})
 
 class Schr():
     def __init__(self, builder):
@@ -54,7 +64,7 @@ class Schr():
             mass = 1
         
         try:
-            h = float(self.mass_e.get_text())
+            h = float(self.plank_e.get_text())
         except:
             print("Plank's constant must be a number. Assuming Plank's constant = 1.")
             h = 1
@@ -62,22 +72,52 @@ class Schr():
         norm = self.norm_c.get_active()
         prob = self.prob_c.get_active()
         
+        q = Queue()
         if erange:
             E_min = self.emin_s.get_value()
             E_max = self.emax_s.get_value()
             
-            ev, ef = cp.schrodinger.solve_numerov(D, V, boundary_start, boundary_end, E_min=E_min, E_max=E_max,
-                dE=dE, precision=precision, h=h, m=mass, normalized=norm)
+            p = Process(target=call_schr, args=[q, D, V, boundary_start, boundary_end],
+                kwargs={"E_min": E_min, "E_max": E_max, "dE": dE, "precision": precision, "h": h,
+                "m": mass, "normalized": norm})
         else:
             eigen_num = int(self.enum_s.get_value())
-            ev, ef = cp.schrodinger.solve_numerov(D, V, boundary_start, boundary_end, eigen_num=eigen_num,
-                dE=dE, precision=precision, h=h, m=mass, normalized=norm)
+           
+            p = Process(target=call_schr, args=[q, D, V, boundary_start, boundary_end],
+                kwargs={"eigen_num": eigen_num, "dE": dE, "precision": precision, "h": h,
+                "m": mass, "normalized": norm})
         
+        p.start()
+        
+        GLib.timeout_add(100, self.update, p, q, prob, D)
+    
+    def update(self, p, q, prob, D):
+        while True:
+            try:
+                elem = q.get()
+            except Queue.Empty:
+                return True
+
+            if elem["type"] == "result":
+                ev, ef = elem["result"]
+                p = Process(target=self.display, args=(prob, D, ev, ef))
+                p.start()
+                
+                return False
+            elif elem["type"] == "fraction":
+                self.progress(elem["fraction"])
+    
+    def display(self, prob, D, ev, ef):
         if prob:
             ps = [cp.schrodinger.square_modulus(psi) for psi in ef]
             self.plot(D, ev, ps)
         else:
             self.plot(D, ev, ef)
+    
+    def progress(self, fraction):
+        self.pot_e.set_progress_fraction(fraction)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
     
     def plot(self, D, ev, ef):
         f = plt.figure()
@@ -96,11 +136,13 @@ class Schr():
     def on_window_delete(self, *args):
         Gtk.main_quit(*args)
 
-builder = Gtk.Builder()
-builder.add_from_file("glade/gui.glade")
-builder.connect_signals(Schr(builder))
 
-window = builder.get_object("SchrWin")
-window.show_all()
+if __name__ == '__main__':
+    builder = Gtk.Builder()
+    builder.add_from_file("glade/gui.glade")
+    builder.connect_signals(Schr(builder))
 
-Gtk.main()
+    window = builder.get_object("SchrWin")
+    window.show_all()
+
+    Gtk.main()
