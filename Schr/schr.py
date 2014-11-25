@@ -33,11 +33,17 @@ class Schr():
         self.emax_s = self.builder.get_object("emax_spin")
         self.enum_s = self.builder.get_object("enum_spin")
         self.einc_s = self.builder.get_object("einc_spin")
+        self.ene_e = self.builder.get_object("energy_entry")
         self.pre_s = self.builder.get_object("precision_spin")
         self.mass_e = self.builder.get_object("mass_entry")
         self.plank_e = self.builder.get_object("plank_entry")
         self.norm_c = self.builder.get_object("norm_check")
         self.prob_c = self.builder.get_object("probability_check")
+        
+        self.min_l = self.builder.get_object("min_label")
+        self.max_l = self.builder.get_object("max_label")
+        self.n_l = self.builder.get_object("n_label")
+        self.ene_l = self.builder.get_object("energy_label")
 
     def on_solve(self, button):
         pot_txt = self.pot_e.get_text()
@@ -132,6 +138,39 @@ class Schr():
         plt.legend()
         
         plt.show()
+        
+    def on_set_range(self, radio):
+        self.emin_s.set_sensitive(True)
+        self.emax_s.set_sensitive(True)
+        self.enum_s.set_sensitive(False)
+        self.ene_e.set_sensitive(False)
+        
+        self.min_l.set_sensitive(True)
+        self.max_l.set_sensitive(True)
+        self.n_l.set_sensitive(False)
+        self.ene_l.set_sensitive(False)
+        
+    def on_set_enum(self, radio):
+        self.emin_s.set_sensitive(False)
+        self.emax_s.set_sensitive(False)
+        self.enum_s.set_sensitive(True)
+        self.ene_e.set_sensitive(False)
+        
+        self.min_l.set_sensitive(False)
+        self.max_l.set_sensitive(False)
+        self.n_l.set_sensitive(True)
+        self.ene_l.set_sensitive(False)
+        
+    def on_set_energy(self, radio):
+        self.emin_s.set_sensitive(False)
+        self.emax_s.set_sensitive(False)
+        self.enum_s.set_sensitive(False)
+        self.ene_e.set_sensitive(True)
+        
+        self.min_l.set_sensitive(False)
+        self.max_l.set_sensitive(False)
+        self.n_l.set_sensitive(False)
+        self.ene_l.set_sensitive(True)
 
     def on_window_delete(self, *args):
         Gtk.main_quit(*args)
