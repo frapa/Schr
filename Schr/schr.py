@@ -7,16 +7,24 @@ from numpy import *
 import matplotlib.pyplot as plt
 from gi.repository import Gtk
 from gi.repository import GLib
+import time
 
 import compy as cp
 
-def call_schr(q, *args, **kwargs):
+# Theta function, useful for step potentials and wells
+def theta(x):
+    if x <= 0:
+        return 0
+    else:
+        return 1
+
+def call_schr(q, tn, *args, **kwargs):
     def callback(fraction):
         q.put({"type": "fraction", "fraction": fraction})
     
     ev, ef = cp.schrodinger.solve_numerov(callback=callback, *args, **kwargs)
     
-    q.put({"type": "result", "result": (ev, ef)})
+    q.put({"type": "result", "result": (ev, ef, args[1], tn)})
 
 class Schr():
     def __init__(self, builder):
@@ -39,11 +47,16 @@ class Schr():
         self.plank_e = self.builder.get_object("plank_entry")
         self.norm_c = self.builder.get_object("norm_check")
         self.prob_c = self.builder.get_object("probability_check")
+        self.pot_c = self.builder.get_object("potential_check")
         
         self.min_l = self.builder.get_object("min_label")
         self.max_l = self.builder.get_object("max_label")
         self.n_l = self.builder.get_object("n_label")
         self.ene_l = self.builder.get_object("energy_label")
+        self.inc_l = self.builder.get_object("increment_label")
+        self.pre_l = self.builder.get_object("precision_label")
+
+        self.times = {}
 
     def on_solve(self, button):
         pot_txt = self.pot_e.get_text()
@@ -53,7 +66,11 @@ class Schr():
         num_points = int(self.points_s.get_value())
 
         D = cp.Domain(fro, to, num_points)
-        V = [eval(pot_txt) for x in D.generator()]
+        try:
+            V = [eval(pot_txt) for x in D.generator()]
+        except:
+            print("Please insert a valid potential funcion.")
+            return 0
         
         boundary_start = self.bs_s.get_value()
         boundary_end = self.be_s.get_value()
@@ -74,6 +91,12 @@ class Schr():
         except:
             print("Plank's constant must be a number. Assuming Plank's constant = 1.")
             h = 1
+        
+        try:
+            E = float(self.ene_e.get_text())
+        except:
+            print("Energy must be a number. Assuming Energy = 1.")
+            E = 1
             
         norm = self.norm_c.get_active()
         prob = self.prob_c.get_active()
@@ -83,16 +106,17 @@ class Schr():
             E_min = self.emin_s.get_value()
             E_max = self.emax_s.get_value()
             
-            p = Process(target=call_schr, args=[q, D, V, boundary_start, boundary_end],
+            p = Process(target=call_schr, args=[q, len(self.times), D, V, boundary_start, boundary_end],
                 kwargs={"E_min": E_min, "E_max": E_max, "dE": dE, "precision": precision, "h": h,
                 "m": mass, "normalized": norm})
         else:
             eigen_num = int(self.enum_s.get_value())
            
-            p = Process(target=call_schr, args=[q, D, V, boundary_start, boundary_end],
+            p = Process(target=call_schr, args=[q, len(self.times), D, V, boundary_start, boundary_end],
                 kwargs={"eigen_num": eigen_num, "dE": dE, "precision": precision, "h": h,
                 "m": mass, "normalized": norm})
         
+        self.times[len(self.times)] = time.time()
         p.start()
         
         GLib.timeout_add(100, self.update, p, q, prob, D)
@@ -105,72 +129,124 @@ class Schr():
                 return True
 
             if elem["type"] == "result":
-                ev, ef = elem["result"]
-                p = Process(target=self.display, args=(prob, D, ev, ef))
+                ev, ef, V, tn = elem["result"]
+
+                end_time = time.time()
+                start_time = self.times[tn]
+                elapsed_time = end_time - start_time
+
+                p = Process(target=self.display, args=(prob, D, ev, ef, V))
                 p.start()
+
+                self.show_results(elapsed_time)
                 
                 return False
             elif elem["type"] == "fraction":
                 self.progress(elem["fraction"])
+
+    def show_results(self, elapsed_time):
+        # Open results window
+        builder = Gtk.Builder()
+        builder.add_from_file("glade/results.glade")
+
+        window = builder.get_object("results_win")
+        window.show_all()
+
+        time_l = builder.get_object("time_label")
+
+        time_l.set_text("{:.3} s".format(elapsed_time))
     
-    def display(self, prob, D, ev, ef):
+    def display(self, prob, D, ev, ef, V):
         if prob:
             ps = [cp.schrodinger.square_modulus(psi) for psi in ef]
-            self.plot(D, ev, ps)
+            self.plot(D, ev, ps, V)
         else:
-            self.plot(D, ev, ef)
+            self.plot(D, ev, ef, V)
     
     def progress(self, fraction):
         self.pot_e.set_progress_fraction(fraction)
         while Gtk.events_pending():
             Gtk.main_iteration()
     
-    def plot(self, D, ev, ef):
-        f = plt.figure()
-        ax = f.add_subplot()
+    def plot(self, D, ev, ef, V):
+        prob = self.prob_c.get_active()
+        show_potential = self.pot_c.get_active()
+
+        if show_potential:
+            f = plt.figure(figsize=(8, 10))
+            ax = f.add_subplot(211)
+        else:
+            f = plt.figure()
+            ax = f.add_subplot()
         
         for v, psi in zip(ev, ef):
             plt.plot(D.as_array(), psi, label=v)
-        
+
+        plt.title("Solutions")
         plt.xlabel("x")
-        plt.ylabel(u"Ψ")
+        if prob:
+            plt.ylabel(u"|Ψ|²")
+        else:
+            plt.ylabel(u"Ψ")
         plt.grid(True)
         plt.legend()
+
+        if show_potential:
+            ax2 = f.add_subplot(212)
+            plt.plot(D.as_array(), V, label="Potential")
+        
+            ymin = np.min(V)
+            ymax = np.max(V)
+
+            if ymin < 0:
+                ymin *= 1.1
+            elif ymin == 0:
+                ymin = -ymax*0.1
+            else:
+                ymin *= 0.9
+
+            if ymax < 0:
+                ymax *= 0.9
+            elif ymax == 0:
+                ymax = -ymin*0.1
+            else:
+                ymax *= 1.1
+
+            print(ymin, ymax)
+            plt.ylim((ymin, ymax))
+
+            plt.xlabel("x")
+            plt.ylabel(u"V")
+            plt.grid(True)
+            plt.legend()
+            f.subplots_adjust(bottom=0.08, top=0.92)
         
         plt.show()
+
+    def set_energy_sensitive(self, *args):
+        widgets = [self.emin_s, self.emax_s, self.enum_s,
+            self.ene_e, self.einc_s, self.pre_s]
+        labels = [self.min_l, self.max_l, self.n_l,
+            self.ene_l, self.inc_l, self.pre_l]
+
+        for b, w, l in zip(args, widgets, labels):
+            w.set_sensitive(b)
+            l.set_sensitive(b)
         
     def on_set_range(self, radio):
-        self.emin_s.set_sensitive(True)
-        self.emax_s.set_sensitive(True)
-        self.enum_s.set_sensitive(False)
-        self.ene_e.set_sensitive(False)
-        
-        self.min_l.set_sensitive(True)
-        self.max_l.set_sensitive(True)
-        self.n_l.set_sensitive(False)
-        self.ene_l.set_sensitive(False)
+        self.set_energy_sensitive(True, True, False, False, True, True)
         
     def on_set_enum(self, radio):
-        self.emin_s.set_sensitive(False)
-        self.emax_s.set_sensitive(False)
-        self.enum_s.set_sensitive(True)
-        self.ene_e.set_sensitive(False)
-        
-        self.min_l.set_sensitive(False)
-        self.max_l.set_sensitive(False)
-        self.n_l.set_sensitive(True)
-        self.ene_l.set_sensitive(False)
+        self.set_energy_sensitive(False, False, True, False, True, True)
         
     def on_set_energy(self, radio):
-        self.emin_s.set_sensitive(False)
-        self.emax_s.set_sensitive(False)
-        self.enum_s.set_sensitive(False)
-        self.ene_e.set_sensitive(True)
-        
-        self.min_l.set_sensitive(False)
-        self.max_l.set_sensitive(False)
-        self.n_l.set_sensitive(False)
-        self.ene_l.set_sensitive(True)
+        self.set_energy_sensitive(False, False, False, True, False, False)
+
+    def on_normalized_toggled(self, check):
+        if self.norm_c.get_active():
+            self.prob_c.set_sensitive(True)
+        else:
+            self.prob_c.set_sensitive(False)
 
     def on_window_delete(self, *args):
         Gtk.main_quit(*args)
