@@ -1,0 +1,257 @@
+# Italian translations for PACKAGE package.
+# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Francesco <francescopasa@gmail.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-29 22:09+0100\n"
+"PO-Revision-Date: 2014-11-29 22:13+0100\n"
+"Last-Translator: Francesco Pasa <francescopasa@gmail.com>\n"
+"Language-Team: Italian\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gui.glade.h:1
+msgid "Schr"
+msgstr ""
+
+#: gui.glade.h:2
+msgid "Potential function"
+msgstr "Potenziale"
+
+#: gui.glade.h:3
+msgid ""
+"Potential energy as a function of x. You can use most elementary functions."
+msgstr "Energia potenziale scritta come funzione di x. Sono disponibili"
+"tutte le funzioni elementari."
+
+#: gui.glade.h:4
+msgid "Integration range"
+msgstr "Intervallo di integrazione"
+
+#: gui.glade.h:5
+msgid "Beginning of the integration range"
+msgstr "Inizio dell'intervallo di integrazione"
+
+#: gui.glade.h:6
+msgid "From:"
+msgstr "Da:"
+
+#: gui.glade.h:7
+msgid "End of the integration range"
+msgstr "Fine dell'intervallo di integrazione"
+
+#: gui.glade.h:8
+msgid "To:"
+msgstr "A:"
+
+#: gui.glade.h:9
+msgid ""
+"The integration range will be subdivided in n intervals.\n"
+"The more point you specify the better the approximation\n"
+"but the longer the computation time."
+msgstr ""
+"L'intervallo di integrazione verrà suddiviso in n intervallini\n"
+"Usare molti punti migliora l'approssimazione ma aumenta\n"
+"il tempo necessario a completare i calcoli."
+
+#: gui.glade.h:12
+msgid "Number of subdivisions:"
+msgstr "Numero di suddivisioni:"
+
+#: gui.glade.h:13
+msgid "Boundary conditions"
+msgstr "Condizioni al contorno"
+
+#: gui.glade.h:14
+msgid ""
+"Specify the boundary condition at the beginning of the integration range.\n"
+"Most of the time this value can safely be set to 1. The only exception is\n"
+"when the boundary condition is certainly zero. In this case it is better to\n"
+"specity 0, as this leads to better results."
+msgstr ""
+"Specifica la condizione al contorno all'inizio dell'intervallo di\n"
+"integrazione. Gran parte delle volte questo valore può essere messo\n"
+"uguale a 1. L'unica eccezione è il caso in cui la condizione al\n"
+"contorno è 0. In tal caso specificare 0 aumenterà la precisione\n"
+"del risultato."
+
+#: gui.glade.h:18
+msgid "Start:"
+msgstr "Inizio:"
+
+#: gui.glade.h:19
+msgid ""
+"Specify the boundary condition at the end of the integration range.\n"
+"Most of the time this value can safely be set to 2. The only exception is\n"
+"when the boundary condition is certainly zero. In this case it is better to\n"
+"specity 0, as this leads to better results. Moreover if the potential is\n"
+"simmetric this must have the same value of start."
+msgstr ""
+"Specifica la condizione al contorno alla fine dell'intervallo di\n"
+"integrazione. Di solito si può impostare a 2. Se la condizione al contorno\n"
+"vale 0 è meglio specificare 0. Se il potenziale è simmetrico questo valore\n"
+"deve essere uguale al valore all'inizio."
+
+#: gui.glade.h:24
+msgid "End:"
+msgstr "Fine:"
+
+#: gui.glade.h:29
+msgid "Energy eigenvalues"
+msgstr "Autovalori dell'energia"
+
+#: gui.glade.h:30
+msgid "Find eigenvalues in range"
+msgstr "Trova gli autovalori in un intervallo"
+
+#: gui.glade.h:31
+msgid "Find all eigenvalues in the specified energy range"
+msgstr "Trova tutti gli autovalori dell'energia nell'intervallo specificato"
+
+#: gui.glade.h:32
+msgid ""
+"Beginning of the energy range. This value cannot\n"
+"be lower than the minimum of potential energy."
+msgstr ""
+"Inizio dell'intervallo di energia. Non può\n"
+"essere più piccolo del minimo dell'energia potenziale."
+
+#: gui.glade.h:34
+msgid "Min:"
+msgstr "Min:"
+
+#: gui.glade.h:35
+msgid ""
+"End of the energy range. Setting this value too\n"
+"high may cause the computation to take long time."
+msgstr ""
+"Fine dell'intervallo di energia. Impostare\n"
+"questo parametro troppo grande può causare una lunga\n"
+"durata dei calcoli."
+
+#: gui.glade.h:37
+msgid "Max:"
+msgstr "Max:"
+
+#: gui.glade.h:38
+msgid "Find n eigenvalues "
+msgstr "Trova n autovalori"
+
+#: gui.glade.h:39
+msgid "Find the first n eigenvalues"
+msgstr "Trova i primi n autovalori"
+
+#: gui.glade.h:40
+msgid "Number of eigenvalues to be found"
+msgstr "Numero di autovalori da trovare"
+
+#: gui.glade.h:41
+msgid "n:"
+msgstr "n:"
+
+#: gui.glade.h:42
+msgid "Calculate solution with specific energy value"
+msgstr "Calcola una soluzione con un valore specifico di energia"
+
+#: gui.glade.h:43
+msgid ""
+"Calculate the solution of the Schordinger equation for the given\n"
+"potential and energy. If the value of energy is not an eigenvalue,\n"
+"the solution will not meet the boundary condition. Moreover it\n"
+"make no sense to normalize it, because it is not a real solution."
+msgstr ""
+"Calcola la soluzione dell'equazione di Schrodinger per il\n"
+"potenziale e l'energia specificati. Se l'energia impostata non è\n"
+"un autovalore, la soluzione non rispetterà le condizioni al contorno\n"
+"Inoltre, in questo caso non ha senso normalizzarla, perché non è una\n"
+"soluzione reale."
+
+#: gui.glade.h:47
+msgid "Energy:"
+msgstr "Energia:"
+
+#: gui.glade.h:48
+msgid "You can use scientific notation"
+msgstr "È possibile usare la notazione scientifica"
+
+#: gui.glade.h:49
+msgid "1.0"
+msgstr "1.0"
+
+#: gui.glade.h:50
+msgid ""
+"Energy increment used to search for eigenvalues.\n"
+"It should be less then the smallest gap between\n"
+"eigenvalues. If the increment is big the program\n"
+"will be very fast but it will probably miss some\n"
+"eigenvalues or give nonsensical results."
+msgstr ""
+"Passo usato per cercare gli autovalori\n"
+"È necessario che sia più piccolo della distanza\n"
+"minima tra gli autovalori. Se l'incremento è grande\n"
+"il programma sarà molto veloce ma potrebbe mancare\n"
+"alcuni autovalori o dare risultati senza senso."
+
+#: gui.glade.h:55
+msgid "Increment:"
+msgstr "Incremento:"
+
+#: gui.glade.h:56
+msgid ""
+"The computed eigenvalues are guaranteed to be\n"
+"at most far as precision from the true value."
+msgstr ""
+"Gli autovalori calcolati saranno contenuti\n"
+"in un intervallo di ampiezza precisione dal\n"
+"valore vero."
+
+#: gui.glade.h:58
+msgid "Precision:"
+msgstr "Precisione:"
+
+#: gui.glade.h:59
+msgid "Other parameters"
+msgstr "Altri parametri"
+
+#: gui.glade.h:60
+msgid "Particle mass:"
+msgstr "Massa della particella:"
+
+#: gui.glade.h:61
+msgid "Planck's constant:"
+msgstr "Costante di Planck"
+
+#: gui.glade.h:62
+msgid "Output settings"
+msgstr "Opzioni di visualizzazione"
+
+#: gui.glade.h:63
+msgid "Normalize wave function"
+msgstr "Normalizza la funzione d'onda"
+
+#: gui.glade.h:64
+msgid "Show probability"
+msgstr "Mostra probabilità"
+
+#: gui.glade.h:65
+msgid "Show the square modulus instead of the actual wave function"
+msgstr "Mostra il modulo quadro invece che la funzione d'onda"
+
+#: gui.glade.h:66
+msgid "Show potential"
+msgstr "Mostra potenziale"
+
+#: gui.glade.h:67
+msgid "Show potential function in a different plot."
+msgstr "Mostra funzione d'onda in un'altro grafico"
+
+#: gui.glade.h:68
+msgid "Solve"
+msgstr "Risolvi"

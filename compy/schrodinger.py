@@ -35,36 +35,48 @@ def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h=1.0, dE=0.1, E_mi
 
     eigenvalues = []
     eigenfunctions = []
-    err = None
+    # Error on wave function. It is not significant since most times we are 
+    # not integrating with known boundary conditions.
+    wf_err = None 
     last_E = None
     for n, E in enumerate(energies):
         a = 2.0*m*(V - E) / h**2
 
         psi = numerov.numerov_integration(D, a, boundary_start, boundary_start+1.0)
-        new_err = psi[-1] - boundary_end
+        new_wf_err = psi[-1] - boundary_end
 
-        if err is not None and err*new_err < 0:
+        if wf_err is not None and wf_err*new_wf_err < 0:
             # We found a energy eigenvalue!
             # Now, using the shooting method (bisection), we get the wave function
             # according to precision
-            error = new_err # error instead of err to avoid confusion with outer loop
+            
+            # E_err instead of wf_err to avoid confusion with outer loop. This time the error is
+            # on the energy eigenvalue.
+            E_err = E - last_E
+            
+            # Moreover we use another variable wf_error instead of wf_err to avoid confusion
+            # with the outer loop.
+            wf_error = new_wf_err
+            
             E1 = last_E
             E2 = E
-            while abs(error) > precision:
+            while abs(E_err) > precision:
+                print(abs(E_err), precision, E)
                 E = (E2 + E1) / 2.0
 
                 a = 2.0*m*(V - E) / h**2
 
                 psi = numerov.numerov_integration(D, a, boundary_start, boundary_start+1.0)
-                new_error = psi[-1] - boundary_end
+                new_wf_error = psi[-1] - boundary_end
 
-                if error*new_error < 0:
+                if wf_error*new_wf_error < 0:
                     E1 = E2
                     E2 = E
                 else:
                     E2 = E
 
-                error = new_error
+                wf_error = new_wf_error
+                E_err = E2 - E1
 
             eigenvalues.append(E)
             eigenfunctions.append(psi)
@@ -80,7 +92,7 @@ def solve_numerov(D, V, boundary_start, boundary_end, m=1.0, h=1.0, dE=0.1, E_mi
         if eigen_num is not None and len(eigenvalues) == eigen_num:
             break
 
-        err = new_err
+        wf_err = new_wf_err
         last_E = E
 
     # How, if requested, we normalize the wave functions

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
+<!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.0"/>
   <object class="GtkAdjustment" id="eigen_num_adjust">
@@ -333,9 +333,10 @@ simmetric this must have the same value of start.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tooltip_text" translatable="yes">Specify the boundary condition at the end of the integration range.
-Most of the time this value can safely be set to 1. The only exception is
+Most of the time this value can safely be set to 2. The only exception is
 when the boundary condition is certainly zero. In this case it is better to
-specity 0, as this leads to better results.</property>
+specity 0, as this leads to better results. Moreover if the potential is
+simmetric this must have the same value of start.</property>
                 <property name="hexpand">True</property>
                 <property name="adjustment">end_adjust</property>
                 <property name="digits">2</property>
