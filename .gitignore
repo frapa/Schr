@@ -2,3 +2,6 @@
 __pycache__
 *.swo
 *.swp
+*~
+./windows/build
+./windows/dist
