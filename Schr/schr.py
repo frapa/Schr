@@ -6,26 +6,27 @@ import time
 import locale, gettext
 import os
 
+from gi.repository import Gtk
+from gi.repository import GLib
 import numpy as np # stupid!!!
 from numpy import *
 import matplotlib.pyplot as plt
-from gi.repository import Gtk
-from gi.repository import GLib
 
 import compy as cp
 
 APP = "schr"
-TRANSLATION_DIR = "./translations"
+TRANSLATION_DIR = ".\translations"
 VERSION = "0.1~alpha"
 
 # Localization
-locale.setlocale(locale.LC_ALL, '')
-locale.bindtextdomain(APP, TRANSLATION_DIR)
-gettext.bindtextdomain(APP, TRANSLATION_DIR)
-gettext.textdomain(APP)
-lang = gettext.translation(APP, TRANSLATION_DIR)
-_ = lang.gettext 
-gettext.install(APP, TRANSLATION_DIR)
+if os.getenv('LANG') is not None:
+    locale.setlocale(locale.LC_ALL, '')
+    locale.bindtextdomain(APP, TRANSLATION_DIR)
+    gettext.bindtextdomain(APP, TRANSLATION_DIR)
+    gettext.textdomain(APP)
+    lang = gettext.translation(APP, TRANSLATION_DIR, lang)
+    _ = lang.gettext 
+    gettext.install(APP, TRANSLATION_DIR)
 
 # Theta function, useful for step potentials and wells
 def theta(x):
